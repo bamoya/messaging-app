@@ -1,0 +1,6 @@
+[submodule "messaging-app-api"]
+	path = messaging-app-api
+	url = git@github.com:bamoya/messaging-app-api.git
+[submodule "messaging-app-ui"]
+	path = messaging-app-ui
+	url = git@github.com:bamoya/messaging-app-ui.git
