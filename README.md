@@ -2,6 +2,11 @@
 
 This is a real-time messaging application, similar to WhatsApp, with a frontend built using Angular and a backend powered by Spring Boot.
 
+For more detailed information about each module, please see their respective README files:
+
+*   [Backend (messaging-app-api)](./messaging-app-api/README.md)
+*   [Frontend (messaging-app-ui)](./messaging-app-ui/README.md)
+
 ## Architecture
 
 The application follows a client-server architecture:
