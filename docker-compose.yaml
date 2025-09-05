@@ -21,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
 
-  mmessaging-app-auth-server:
+  messaging-app-auth-server:
     container_name: messaging-app-keycloak
     image: quay.io/keycloak/keycloak:26.0.0
     ports:
@@ -31,9 +31,8 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: bamoya
       KC_BOOTSTRAP_ADMIN_PASSWORD: bamoya
 
-      
       # Recommended for development to avoid HTTPS issues
-      KC_HTTP_ENABLED: 'true'
+      KC_HTTP_ENABLED: "true"
       KC_PROXY: edge
     networks:
       - messaging-app-network
@@ -44,29 +43,31 @@ services:
         condition: service_healthy
     command: start-dev --import-realm
 
-  # messaging-app-api:
-  #   container_name: messaging-app-api-wac
-  #   build:
-  #     context: ./messaging-app-api
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8080:8080
-  #   networks:
-  #     - messaging-app-network
-  #   depends_on:
-  #     - messaging-app-db
-  #     - messaging-app-auth-server
-  # messaging-app-ui:
-  #   container_name: messaging-app-ui-wac
-  #   build:
-  #     context: ./messaging-app-ui
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 4200:80
-  #   networks:
-  #     - messaging-app-network
-  #   depends_on:
-  #     - messaging-app-api
+  messaging-app-api:
+    image: bamoya/messaging-api:latest
+    container_name: messaging-app-api
+    build:
+      context: ./messaging-app-api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - messaging-app-network
+    depends_on:
+      - messaging-app-db
+      - messaging-app-auth-server
+  messaging-app-ui:
+    image: bamoya/messaging-ui:latest
+    container_name: messaging-app-ui
+    build:
+      context: ./messaging-app-ui
+      dockerfile: Dockerfile
+    ports:
+      - 4200:4200
+    networks:
+      - messaging-app-network
+    depends_on:
+      - messaging-app-api
 networks:
   messaging-app-network:
     driver: bridge
