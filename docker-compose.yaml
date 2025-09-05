@@ -1,6 +1,6 @@
 services:
-  postgress:
-    container_name: postgres-wac
+  messaging-app-db:
+    container_name: messaging-app-postgres
     image: postgres:16
     environment:
       POSTGRES_USER: bamoya
@@ -8,28 +8,69 @@ services:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: whatsapp_clone
     volumes:
-      - postgres:/data/postgres
+      - messaging-app-volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
-      - wac
+      - messaging-app-network
     restart: unless-stopped
-  keycloak:
-    container_name: keycloak-wac
+    # Add this healthcheck block
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bamoya -d whatsapp_clone"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mmessaging-app-auth-server:
+    container_name: messaging-app-keycloak
     image: quay.io/keycloak/keycloak:26.0.0
     ports:
       - 9090:8080
     environment:
+      # Admin credentials for the Keycloak UI
       KC_BOOTSTRAP_ADMIN_USERNAME: bamoya
       KC_BOOTSTRAP_ADMIN_PASSWORD: bamoya
+
+      
+      # Recommended for development to avoid HTTPS issues
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY: edge
     networks:
-      - wac
-    command:
-      - "start-dev"
+      - messaging-app-network
+    volumes:
+      - ./infra/keycloak/messaging-app.json:/opt/keycloak/data/import/messaging-app.json
+    depends_on:
+      messaging-app-db:
+        condition: service_healthy
+    command: start-dev --import-realm
+
+  # messaging-app-api:
+  #   container_name: messaging-app-api-wac
+  #   build:
+  #     context: ./messaging-app-api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - messaging-app-network
+  #   depends_on:
+  #     - messaging-app-db
+  #     - messaging-app-auth-server
+  # messaging-app-ui:
+  #   container_name: messaging-app-ui-wac
+  #   build:
+  #     context: ./messaging-app-ui
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 4200:80
+  #   networks:
+  #     - messaging-app-network
+  #   depends_on:
+  #     - messaging-app-api
 networks:
-  wac:
+  messaging-app-network:
     driver: bridge
 
 volumes:
-  postgres:
+  messaging-app-volume:
     driver: local

@@ -1,0 +1,73 @@
+{
+  "realm": "messaging-app",
+  "enabled": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationEmailAsUsername": true,
+  "registrationAllowed": true,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "resetPasswordAllowed": true,
+  "clients": [
+    {
+      "clientId": "messaging-app",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "rootUrl": "http://localhost:4200",
+      "baseUrl": "http://localhost:4200",
+      "redirectUris": [
+        "http://localhost:4200/*"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:8080"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "firstName": "Yassine",
+      "lastName": "Bassim",
+      "email": "yassine@bamoya.com",
+      "username": "yassine@bamoya.com",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ],
+      "clientRoles": {
+        "account": [
+          "manage-account",
+          "view-profile"
+        ]
+      }
+    },
+    {
+      "firstName": "Mohamed",
+      "lastName": "Bassim",
+      "email": "mohamed@bamoya.com",
+      "username": "mohamed@bamoya.com",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ],
+      "clientRoles": {
+        "account": [
+          "manage-account",
+          "view-profile"
+        ]
+      }
+    }
+  ]
+}
